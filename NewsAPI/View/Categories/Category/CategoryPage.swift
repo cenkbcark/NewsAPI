@@ -6,14 +6,44 @@
 //
 
 import UIKit
+import Kingfisher
 
-class CategoryPage: UIViewController {
-
+final class CategoryPage: UIViewController {
+    
+    @IBOutlet weak var categoryCollectionView: UICollectionView!
+    
+    var categoryNewsList : [News]? = []
+    var selectedCategory: String?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        categoryCollectionView.delegate = self
+        categoryCollectionView.dataSource = self
+        
+        if selectedCategory != nil {
+            setDataCategory(from: self, selectedCategory: selectedCategory!)
+        }
+        
+    }
 
-        // Do any additional setup after loading the view.
+
+}
+extension CategoryPage: UICollectionViewDelegate,UICollectionViewDataSource{
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return categoryNewsList?.count ?? 0
     }
     
-
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        if let cell = categoryCollectionView.dequeueReusableCell(withReuseIdentifier: "CategoryCell", for: indexPath) as? CategoryCell{
+            
+            let new = categoryNewsList![indexPath.row]
+            cell.setNews(from: new)
+            cell.layer.cornerRadius = 10.0
+            return cell
+        }
+        return UICollectionViewCell()
+    }
 }
